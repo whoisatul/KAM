@@ -6,10 +6,13 @@ const has = (t, words) => words.some((w) => t.includes(w));
 function reply(session, raw, opts = {}) {
   const t = raw.toLowerCase();
   const negative = has(t, ["no ", "nahi", "not ", "haven", "didn"]);
+  if (has(t, ["not ravi", "wrong name", "who are you", "who am i talking"])) {
+    return "Sorry about that — I had this account listed as Ravi Kumar at Kumar Home Essentials. What should I call you, and how can I help with the store today?";
+  }
   if (opts.goodbye && session.step >= 5) {
     session.ended = true;
     session.summary = defaultSummary();
-    return "Glad I could help, Ravi ji. The key issue is stock-outs and cancellations. Restock the top five items, fix cancellations, then run a small promotion. I will check in on Friday. Goodbye!";
+    return "Glad I could help. The key issue is stock-outs and cancellations. Restock the top five items, fix cancellations, then run a small promotion. I will check in on Friday. Goodbye!";
   }
   switch (session.step) {
     case 0:

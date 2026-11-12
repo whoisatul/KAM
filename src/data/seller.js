@@ -1,7 +1,7 @@
 // STEP 1 - Mock data. The first block is from the assignment; the rest are
 // ASSUMPTIONS (state them in your note).
 module.exports = {
-    seller: { name: "Ravi Kumar", store: "Kumar Home Essentials", category: "Home & Kitchen", listings: 60 },
+    seller: { name: "Hrikshesh Kumar", store: "Kumar Home Essentials", category: "Home & Kitchen", listings: 60 },
     // From the assignment
     metrics: {
       sales: { last: 200000, now: 135000 },

@@ -3,7 +3,7 @@
 const SYSTEM = require("./prompt");
 const { registry, defaultSummary } = require("./tools");
 
-const MODEL = () => process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const MODEL = () => process.env.GEMINI_MODEL || "gemini-3.5-flash";
 const URL = () => `https://generativelanguage.googleapis.com/v1beta/models/${MODEL()}:generateContent`;
 
 const S = (type, extra = {}) => ({ type, ...extra });
@@ -39,19 +39,28 @@ function runTool(session, name, args) {
 }
 
 async function callGemini(contents) {
-  const res = await fetch(URL(), {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY },
-    body: JSON.stringify({
-      systemInstruction: { parts: [{ text: SYSTEM }] },
-      contents,
-      tools: [{ functionDeclarations: declarations }],
-      generationConfig: { temperature: 0.4, maxOutputTokens: 300 },
-    }),
-    signal: AbortSignal.timeout(12000),
-  });
-  if (!res.ok) throw new Error(`Gemini ${res.status}: ${(await res.text()).slice(0, 200)}`);
-  return res.json();
+  let lastErr;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const res = await fetch(URL(), {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: SYSTEM }] },
+        contents,
+        tools: [{ functionDeclarations: declarations }],
+        generationConfig: { maxOutputTokens: 512, thinkingConfig: { thinkingLevel: "low" } },
+      }),
+      signal: AbortSignal.timeout(25000),
+    });
+    if (res.status === 503) {
+      lastErr = new Error(`Gemini 503: busy`);
+      await new Promise((r) => setTimeout(r, 800 * (attempt + 1)));
+      continue;
+    }
+    if (!res.ok) throw new Error(`Gemini ${res.status}: ${(await res.text()).slice(0, 200)}`);
+    return res.json();
+  }
+  throw lastErr || new Error("Gemini unavailable");
 }
 
 async function chat(session, userText) {
@@ -69,9 +78,12 @@ async function chat(session, userText) {
         if (text) return text;
         throw new Error("No text in reply");
       }
-      const responses = calls.map((c) => ({
-        functionResponse: { name: c.functionCall.name, response: { result: runTool(session, c.functionCall.name, c.functionCall.args || {}) } },
-      }));
+      const responses = calls.map((c) => {
+        const fc = c.functionCall;
+        const fr = { name: fc.name, response: { result: runTool(session, fc.name, fc.args || fc.arguments || {}) } };
+        if (fc.id) fr.id = fc.id;
+        return { functionResponse: fr };
+      });
       session.contents.push({ role: "user", parts: responses });
     }
     throw new Error("Too many tool rounds");

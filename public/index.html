@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Snapdeal Virtual KAM</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 <main class="wrap">
@@ -13,7 +13,16 @@
     <section class="card call">
       <div class="stage">
         <button id="orb" aria-label="Start call">Call KAM</button>
-        <div><div id="status">Ready</div><div id="sub">Tap Call KAM, allow the microphone, then just talk.</div></div>
+        <div>
+          <div id="status">Ready</div>
+          <div id="sub">Tap Call KAM, allow the microphone, then talk. You can also type below.</div>
+          <div id="meter" class="meter" hidden><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="voice-row">
+        <label for="voiceSel">Agent voice</label>
+        <select id="voiceSel" aria-label="Agent voice"></select>
+        <button type="button" class="btn" id="preview">Preview</button>
       </div>
       <div id="log" aria-live="polite"><div class="empty">Try: “My sales have dropped significantly this month. Can you help me?”</div></div>
       <div class="typed">
@@ -29,6 +38,6 @@
     </aside>
   </div>
 </main>
-<script src="app.js"></script>
+<script src="app.js?v=6"></script>
 </body>
 </html>

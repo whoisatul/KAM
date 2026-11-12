@@ -43,7 +43,7 @@ async function handleTurn(session, rawText) {
   }
   session.log.push({ user: String(rawText).slice(0, 200), reply, flag, brain, t: Date.now() });
   console.log(`[turn] brain=${brain} flag=${flag || "-"} ended=${session.ended}`);
-  return { reply, ended: session.ended, summary: session.ended ? session.summary || defaultSummary() : null, escalated: session.escalated };
+  return { reply, ended: session.ended, summary: session.ended ? session.summary || defaultSummary() : null, escalated: session.escalated, brain };
 }
 
 module.exports = { newSession, handleTurn, GREETING };
