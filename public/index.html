@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Snapdeal Virtual KAM</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="wrap">
+  <header><div class="logo">S</div><div><h1>Snapdeal Virtual KAM</h1><p>Voice assistant for seller growth · prototype with mock data</p></div></header>
+  <div class="grid">
+    <section class="card call">
+      <div class="stage">
+        <button id="orb" aria-label="Start call">Call KAM</button>
+        <div><div id="status">Ready</div><div id="sub">Tap Call KAM, allow the microphone, then just talk.</div></div>
+      </div>
+      <div id="log" aria-live="polite"><div class="empty">Try: “My sales have dropped significantly this month. Can you help me?”</div></div>
+      <div class="typed">
+        <input id="txt" placeholder="Voice not working? Type here" aria-label="Type a message">
+        <button class="btn" id="send">Send</button>
+        <button class="btn" id="end" disabled>End call</button>
+      </div>
+      <p id="chips" class="note"></p>
+    </section>
+    <aside>
+      <div class="card"><h2 id="who">Seller account</h2><div class="sc"><table id="tbl"></table></div><p class="note" id="assume"></p></div>
+      <div class="card" id="sum"></div>
+    </aside>
+  </div>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
